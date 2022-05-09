@@ -70,7 +70,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/description"
-                app:rippleColor="#E83333"
+                app:rippleColor="#8BC34A"
                 app:strokeColor="#4CAF50"
                 app:strokeWidth="1dp" />
         </androidx.constraintlayout.widget.ConstraintLayout>

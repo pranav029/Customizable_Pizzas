@@ -72,7 +72,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
                 android:layout_weight="1"
-                android:backgroundTint="#F6F4F5"
+                android:backgroundTint="#FFFCFE"
                 android:gravity="start"
                 android:textColor="#E91E63"
                 app:icon="@android:drawable/ic_menu_delete"

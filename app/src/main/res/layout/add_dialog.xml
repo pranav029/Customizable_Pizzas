@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="300dp"
+    android:layout_height="350dp"
+    android:orientation="vertical">
+
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="5dp"
+        android:text="Crust"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RadioGroup
+                android:id="@+id/crustgrp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            </RadioGroup>
+        </LinearLayout>
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Size"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RadioGroup
+                android:id="@+id/sizegrp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:isScrollContainer="true" />
+        </LinearLayout>
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/cost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="5dp"
+        android:layout_weight="1"
+        android:fontFamily="@font/alata"
+        android:text="250"
+        android:textSize="24sp" />
+
+    <Button
+        android:id="@+id/add"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="8dp"
+        android:layout_weight="0"
+        android:text="ADD ITEM"
+        android:textColor="#4CAF50"
+        android:textSize="16sp"
+        app:icon="@android:drawable/ic_input_add"
+        app:iconTint="#4CAF50"
+        app:rippleColor="#4CAF50"
+        app:strokeColor="#4CAF50"
+        app:strokeWidth="1dp" />
+
+</LinearLayout>

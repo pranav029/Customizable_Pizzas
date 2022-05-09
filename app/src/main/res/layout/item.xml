@@ -73,6 +73,29 @@
                 app:rippleColor="#8BC34A"
                 app:strokeColor="#4CAF50"
                 app:strokeWidth="1dp" />
+
+            <TextView
+                android:id="@+id/itemPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/alata"
+                android:gravity="left"
+                android:text="500"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@+id/add"
+                app:layout_constraintStart_toEndOf="@+id/imageView2"
+                app:layout_constraintTop_toTopOf="@+id/add"
+                app:layout_constraintVertical_bias="0.724" />
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/itemPrice"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/itemPrice"
+                app:srcCompat="@drawable/rupee" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>

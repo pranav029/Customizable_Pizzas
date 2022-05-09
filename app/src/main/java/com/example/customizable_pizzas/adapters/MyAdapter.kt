@@ -61,6 +61,8 @@ class MyAdapter<T>(private val listener: Listener):
                 (holder as MyViewholder).binding.apply {
                     pizza.text = temp.name
                     description.text = temp.description
+                    val c = temp.crusts[temp.defaultCrust-1]
+                    itemPrice.text = c.sizes[c.defaultSize-1].price.toString()
                     if(temp.isVeg){
                         veg.setImageResource(R.drawable.veg)
                     }else veg.setImageResource(R.drawable.nveg)

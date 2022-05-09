@@ -22,10 +22,10 @@ class MainViewmodel(private val repo: Repository): ViewModel(){
     var totalCartValue:MutableLiveData<Int> = MutableLiveData()
     var cartItemsCount:MutableLiveData<Int> = MutableLiveData()
     var cart:MutableLiveData<ArrayList<CartItem>> = MutableLiveData()
-    var cartItemCountTemp:Int = 0
-    var totalCost:Int = 0
-    var cartItems:ArrayList<CartItem> = ArrayList()
-    var currentSelection:ResponseData? = null
+    var cartItemCountTemp:Int = 0 //variable to keep track of Cart Item count
+    var totalCost:Int = 0 //variable to keep track of Total cart value
+    var cartItems:ArrayList<CartItem> = ArrayList() //ArrayList to store items in cart
+    var currentSelection:ResponseData? = null //variable to hold the object of current selection from pizza list
 
     init {
         fetchItem()
@@ -33,7 +33,9 @@ class MainViewmodel(private val repo: Repository): ViewModel(){
         cartItemsCount.postValue(cartItemCountTemp)
     }
 
+    //fetching pizzas from repository
     fun fetchItem() = viewModelScope.launch {
+        responseData.postValue(ResponseType.Loading())
        val response = repo.fetchItems()
         if(response.isSuccessful){
            response.body()?.let {
@@ -46,6 +48,7 @@ class MainViewmodel(private val repo: Repository): ViewModel(){
         }
     }
 
+    //fetching available crust of current pizza selected
     fun setDialogCrust(){
         var local:ArrayList<Crust> = ArrayList()
         currentSelection?.let { local.addAll(it.crusts) }
@@ -55,6 +58,7 @@ class MainViewmodel(private val repo: Repository): ViewModel(){
         }
     }
 
+    //fetching available size of current crust selected
     fun setDialogSize(crustId:Int){
         var local:ArrayList<Size> = ArrayList()
         currentSelection?.let { local.addAll(it.crusts[crustId-1].sizes) }
@@ -64,9 +68,13 @@ class MainViewmodel(private val repo: Repository): ViewModel(){
            defaultSize.postValue(it.crusts[it.defaultCrust-1].defaultSize)
        }
     }
+
+    //updating the price after addition or deletion
     fun updateSelectionDialogPrice(crustId:Int, sizeId:Int){
         currentSelection?.let { currentItemPrice.postValue(it.crusts[crustId-1].sizes[sizeId-1].price) }
     }
+
+    //adding item to cart
     fun addToCart(crustId: Int,sizeId: Int){
         currentSelection?.let { totalCost+=it.crusts[crustId-1].sizes[sizeId-1].price}
         cartItemCountTemp++
@@ -87,6 +95,7 @@ class MainViewmodel(private val repo: Repository): ViewModel(){
         cartItemsCount.postValue(cartItemCountTemp)
     }
 
+    //removing item from cart
     fun removeItem(item:CartItem){
         val pos = cartItems.indexOf(item)
         cartItems[pos].count--

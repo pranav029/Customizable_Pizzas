@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Customizable_Pizzas</string>
+    <string name="empty_message">Cart is Empty</string>
+    <string name="cart_count_message">Total Items in Cart : </string>
 </resources>

@@ -1,9 +1,12 @@
 package com.example.customizable_pizzas
 
 import android.app.Dialog
+import android.opengl.Visibility
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.*
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,15 +24,13 @@ import com.example.customizable_pizzas.viewmodel.NewsViewModelProviderFactory
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private lateinit var adapter: MyAdapter<ResponseData>
+    private lateinit var pizzaAdapter: MyAdapter<ResponseData>
     private lateinit var cartAdapter: MyAdapter<CartItem>
     private lateinit var viewModel:MainViewmodel
-    private  var array:ArrayList<ResponseData> = ArrayList()
-    private  var cartList:ArrayList<CartItem> = ArrayList()
-    private lateinit var dialog:Dialog
-    private lateinit var cart:Dialog
-    private lateinit var crustGroup:RadioGroup
-    private lateinit var sizeGroup: RadioGroup
+    private lateinit var customSelectionDialog:Dialog
+    private lateinit var shoppingCartDialog:Dialog
+    private lateinit var crustSelectionRadioGroup:RadioGroup
+    private lateinit var sizeSelectionRadioGroup: RadioGroup
     private lateinit var responseData: ResponseData
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,59 +41,98 @@ class MainActivity : AppCompatActivity() {
         initRecyclerView()
         val viewModelProviderFactory = NewsViewModelProviderFactory(Repository())
         viewModel = ViewModelProvider(this,viewModelProviderFactory).get(MainViewmodel::class.java)
+
+        //getting list of all the available pizza
         viewModel.responseData.observe(this, Observer {
             response ->
             when(response){
                 is ResponseType.Success ->{
                     response.data?.let{
-                       adapter.differ.submitList(it.toList())
+                       pizzaAdapter.differ.submitList(it.toList())
+                        hideSpinner()
                     }
                 }
+                is ResponseType.Loading -> showSpinner()
             }
         })
+        //getting the crust list for currently selected pizza
         viewModel.crust.observe(this, Observer {
             crusts->
              setCrusts(crusts)
         })
+
+        //getting the size list of currently selected crust
         viewModel.size.observe(this, Observer {
             size->
             setSizes(size)
         })
+
+        //for getting the price of currently selected custimized pizza
         viewModel.currentItemPrice.observe(this, Observer {
             price->
             setCost(price.toString())
         })
+
+        //for getting the default crust of currently selected pizza
         viewModel.defaultCrust.observe(this, Observer {
             id->
-            val temp = crustGroup.findViewById<RadioButton>(id)
+            val temp = crustSelectionRadioGroup.findViewById<RadioButton>(id)
             temp.isChecked = true
         })
+
+//        for getting the defaultsize of current selected crust in selection dialog
         viewModel.defaultSize.observe(this, Observer {
             id->
-            val temp = sizeGroup.findViewById<RadioButton>(id)
+            val temp = sizeSelectionRadioGroup.findViewById<RadioButton>(id)
             temp.isChecked = true
         })
+
+        //For getting total Items in cart
         viewModel.cartItemsCount.observe(this, Observer {
             count->
             binding.itemCount.text = count.toString()
+
+            //For Displaying Cart Item count in CartDialog
+            if(count == 0)shoppingCartDialog.findViewById<TextView>(R.id.msg)
+                .text = resources.getString(R.string.empty_message)
+            else shoppingCartDialog.findViewById<TextView>(R.id.msg)
+                .text = "${resources.getString(R.string.cart_count_message)}${count}"
         })
+
+        //For getting total value of the shopping cart
         viewModel.totalCartValue.observe(this, Observer {
             value->
             binding.cartValue.text = value.toString()
-            cart.findViewById<TextView>(R.id.grandTotal).text = value.toString()
+            shoppingCartDialog.findViewById<TextView>(R.id.grandTotal).text = value.toString()
         })
+
+        //For getting list of items in cart
         viewModel.cart.observe(this, Observer {
             list->
             cartAdapter.differ.submitList(list.toList())
         })
+
+        //attaching listener to remove button
         findViewById<Button>(R.id.remove).setOnClickListener {
-            cart.show()
+            shoppingCartDialog.show()
         }
-        binding.scart.setOnClickListener { cart.show() }
+        /*attaching listener to cart icon which when pressed
+         opens the cart dialog */
+        binding.scart.setOnClickListener { shoppingCartDialog.show() }
     }
 
 
-    fun showDialog() = dialog.show()
+    fun showDialog() {
+        customSelectionDialog.show()
+    }
+    fun showSpinner() {
+        binding.progressBar.visibility = View.VISIBLE
+    }
+    fun hideSpinner(){
+        binding.progressBar.visibility =View.GONE
+    }
+
+    //creates and return a new Radio Button
     fun newRadioButton(text:String,id:Int):RadioButton{
         var button = RadioButton(this)
         button.setText(text)
@@ -101,33 +141,40 @@ class MainActivity : AppCompatActivity() {
         return button
     }
 
+    //initializes all the recyclerviews
     fun initDialog(){
-        dialog = Dialog(this)
-        cart = Dialog(this)
-        dialog.setContentView(R.layout.add_dialog)
-        crustGroup = dialog.findViewById<RadioGroup>(R.id.crustgrp)
-        sizeGroup = dialog.findViewById<RadioGroup>(R.id.sizegrp)
-        crustGroup.setOnCheckedChangeListener(RadioGroup.OnCheckedChangeListener{
+        customSelectionDialog = Dialog(this)
+        shoppingCartDialog = Dialog(this)
+        customSelectionDialog.setContentView(R.layout.add_dialog)
+        shoppingCartDialog.setContentView(R.layout.cart_dialog)
+        crustSelectionRadioGroup = customSelectionDialog.findViewById<RadioGroup>(R.id.crustgrp)
+        sizeSelectionRadioGroup = customSelectionDialog.findViewById<RadioGroup>(R.id.sizegrp)
+
+        crustSelectionRadioGroup.setOnCheckedChangeListener(RadioGroup.OnCheckedChangeListener{
             group: RadioGroup?, checkedId: Int ->
             viewModel.setDialogSize(checkedId)
         })
-        sizeGroup.setOnCheckedChangeListener(RadioGroup.OnCheckedChangeListener{
+
+        sizeSelectionRadioGroup.setOnCheckedChangeListener(RadioGroup.OnCheckedChangeListener{
             group: RadioGroup?, checkedId: Int ->
-            viewModel.updateSelectionDialogPrice(crustGroup.checkedRadioButtonId,sizeGroup.checkedRadioButtonId)
+            viewModel.updateSelectionDialogPrice(crustSelectionRadioGroup.checkedRadioButtonId,sizeSelectionRadioGroup.checkedRadioButtonId)
         })
-        dialog.findViewById<Button>(R.id.add).setOnClickListener {
+
+        customSelectionDialog.findViewById<Button>(R.id.add).setOnClickListener {
             viewModel.currentSelection?.let {
-                viewModel.addToCart(crustGroup.checkedRadioButtonId,sizeGroup.checkedRadioButtonId)
-                dialog.dismiss()
+                viewModel.addToCart(crustSelectionRadioGroup.checkedRadioButtonId,sizeSelectionRadioGroup.checkedRadioButtonId)
+                viewModel.currentSelection = null
+                customSelectionDialog.dismiss()
             }
         }
-        cart.setContentView(R.layout.cart_dialog)
+
     }
 
+    //initializes all the dialog boxes
     fun initRecyclerView(){
         val recyclerview:RecyclerView = findViewById(R.id.recyclerView)
         recyclerview.layoutManager = LinearLayoutManager(this)
-        adapter = MyAdapter<ResponseData>(object: MyAdapter.Listener{
+        pizzaAdapter = MyAdapter<ResponseData>(object: MyAdapter.Listener{
             override fun onClick(res: Any?) {
                 responseData = res as ResponseData
                 viewModel.currentSelection = res
@@ -136,8 +183,8 @@ class MainActivity : AppCompatActivity() {
                 showDialog()
             }
         })
-        recyclerview.adapter = adapter
-        val cartRecycler:RecyclerView = cart.findViewById(R.id.cartRecycler)
+        recyclerview.adapter = pizzaAdapter
+        val cartRecycler:RecyclerView = shoppingCartDialog.findViewById(R.id.cartRecycler)
         cartRecycler.layoutManager = LinearLayoutManager(this)
         cartAdapter = MyAdapter<CartItem>(object: MyAdapter.Listener{
             override fun onClick(res: Any?) {
@@ -148,19 +195,23 @@ class MainActivity : AppCompatActivity() {
         cartRecycler.adapter = cartAdapter
     }
 
+    //adding items to the crust RadioGroup from crust list obtained
     fun setCrusts(list:ArrayList<Crust>){
-        crustGroup.removeAllViews()
+        crustSelectionRadioGroup.removeAllViews()
         for(temp in list){
-            crustGroup.addView(newRadioButton(temp.name,temp.id))
+            crustSelectionRadioGroup.addView(newRadioButton(temp.name,temp.id))
         }
     }
+    //adding items to the size RadioGroup from size list obtained
     fun setSizes(list:ArrayList<Size>){
-        sizeGroup.removeAllViews()
+        sizeSelectionRadioGroup.removeAllViews()
         for(temp in list){
-            sizeGroup.addView(newRadioButton(temp.name,temp.id))
+            sizeSelectionRadioGroup.addView(newRadioButton(temp.name,temp.id))
         }
     }
+
+    //displaying cost of current customizable pizza selected
     fun setCost(cost:String){
-        dialog.findViewById<TextView>(R.id.cost).text = cost
+        customSelectionDialog.findViewById<TextView>(R.id.cost).text = cost
     }
 }

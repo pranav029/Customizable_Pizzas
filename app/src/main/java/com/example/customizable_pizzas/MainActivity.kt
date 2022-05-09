@@ -3,12 +3,12 @@ package com.example.customizable_pizzas
 import android.app.Dialog
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.widget.*
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.customizable_pizzas.adapters.MyAdapter
 import com.example.customizable_pizzas.databinding.ActivityMainBinding
 import com.example.customizable_pizzas.modal.CartItem
 import com.example.customizable_pizzas.modal.Crust
@@ -45,9 +45,7 @@ class MainActivity : AppCompatActivity() {
             when(response){
                 is ResponseType.Success ->{
                     response.data?.let{
-                        array.clear()
-                        array.addAll(it)
-                        adapter.notifyDataSetChanged()
+                       adapter.differ.submitList(it.toList())
                     }
                 }
             }
@@ -85,9 +83,7 @@ class MainActivity : AppCompatActivity() {
         })
         viewModel.cart.observe(this, Observer {
             list->
-            cartList.clear()
-            cartList.addAll(list)
-            cartAdapter.notifyDataSetChanged()
+            cartAdapter.differ.submitList(list.toList())
         })
         findViewById<Button>(R.id.remove).setOnClickListener {
             cart.show()
@@ -131,7 +127,7 @@ class MainActivity : AppCompatActivity() {
     fun initRecyclerView(){
         val recyclerview:RecyclerView = findViewById(R.id.recyclerView)
         recyclerview.layoutManager = LinearLayoutManager(this)
-        adapter = MyAdapter<ResponseData>(array,object:MyAdapter.Listener{
+        adapter = MyAdapter<ResponseData>(object: MyAdapter.Listener{
             override fun onClick(res: Any?) {
                 responseData = res as ResponseData
                 viewModel.currentSelection = res
@@ -143,7 +139,7 @@ class MainActivity : AppCompatActivity() {
         recyclerview.adapter = adapter
         val cartRecycler:RecyclerView = cart.findViewById(R.id.cartRecycler)
         cartRecycler.layoutManager = LinearLayoutManager(this)
-        cartAdapter = MyAdapter<CartItem>(cartList,object:MyAdapter.Listener{
+        cartAdapter = MyAdapter<CartItem>(object: MyAdapter.Listener{
             override fun onClick(res: Any?) {
                 val temp = res as CartItem
                 viewModel.removeItem(temp)

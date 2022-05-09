@@ -104,6 +104,7 @@ class MainActivity : AppCompatActivity() {
         if(id == 1)button.isChecked = true
         return button
     }
+
     fun initDialog(){
         dialog = Dialog(this)
         cart = Dialog(this)
@@ -126,6 +127,7 @@ class MainActivity : AppCompatActivity() {
         }
         cart.setContentView(R.layout.cart_dialog)
     }
+
     fun initRecyclerView(){
         val recyclerview:RecyclerView = findViewById(R.id.recyclerView)
         recyclerview.layoutManager = LinearLayoutManager(this)

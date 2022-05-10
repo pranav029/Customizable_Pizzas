@@ -9,7 +9,7 @@ class RetrofitInstance {
         private val retrofit by lazy {
             Retrofit.Builder()
                 .addConverterFactory(MoshiConverterFactory.create())
-                .baseUrl("https://newsapi.org/")
+                .baseUrl("https://625bbd9d50128c570206e502.mockapi.io/")
                 .build()
         }
         val get by lazy {

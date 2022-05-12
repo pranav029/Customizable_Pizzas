@@ -99,6 +99,7 @@ class MainViewmodel(private val repo: Repository): ViewModel(){
 
     //removing item from cart
     fun removeItem(item:CartItem){
+        if(cartItems.isEmpty())return
         val pos = cartItems.indexOf(item)
         cartItems[pos].count--
         cartItems[pos].price?.let { totalCost-=it }

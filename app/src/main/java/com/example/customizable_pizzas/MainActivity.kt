@@ -1,6 +1,7 @@
 package com.example.customizable_pizzas
 
 import android.app.Dialog
+import android.app.usage.UsageEvents
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -22,6 +23,8 @@ import com.example.customizable_pizzas.repository.Repository
 import com.example.customizable_pizzas.utils.ResponseType
 import com.example.customizable_pizzas.viewmodel.MainViewmodel
 import com.example.customizable_pizzas.viewmodel.NewsViewModelProviderFactory
+import java.util.*
+import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -180,6 +183,10 @@ class MainActivity : AppCompatActivity() {
                 customSelectionDialog.findViewById<TextView>(R.id.countCurr).text = "1"
             }
         }
+       customSelectionDialog.setOnDismissListener {
+           viewModel.currentSelection = null
+           customSelectionDialog.findViewById<TextView>(R.id.countCurr).text = "1"
+       }
 
     }
 

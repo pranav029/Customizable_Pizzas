@@ -1,12 +1,13 @@
 package com.example.customizable_pizzas
 
 import android.app.Dialog
-import android.opengl.Visibility
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.widget.*
-import androidx.core.view.isVisible
+import android.widget.Button
+import android.widget.RadioButton
+import android.widget.RadioGroup
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager

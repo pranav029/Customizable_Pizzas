@@ -119,6 +119,16 @@ class MainActivity : AppCompatActivity() {
         /*attaching listener to cart icon which when pressed
          opens the cart dialog */
         binding.scart.setOnClickListener { shoppingCartDialog.show() }
+
+        customSelectionDialog.findViewById<Button>(R.id.inc).setOnClickListener{
+            val countCurr = customSelectionDialog.findViewById<TextView>(R.id.countCurr)
+            countCurr.text = (Integer.parseInt(countCurr.text.toString()) + 1).toString()
+        }
+        customSelectionDialog.findViewById<Button>(R.id.dec).setOnClickListener {
+            val countCurr = customSelectionDialog.findViewById<TextView>(R.id.countCurr)
+            val t = Integer.parseInt(countCurr.text.toString())
+            if(t > 1) countCurr.text = (t -1).toString()
+        }
     }
 
 
@@ -162,9 +172,11 @@ class MainActivity : AppCompatActivity() {
 
         customSelectionDialog.findViewById<Button>(R.id.add).setOnClickListener {
             viewModel.currentSelection?.let {
-                viewModel.addToCart(crustSelectionRadioGroup.checkedRadioButtonId,sizeSelectionRadioGroup.checkedRadioButtonId)
+                viewModel.addToCart(crustSelectionRadioGroup.checkedRadioButtonId,sizeSelectionRadioGroup.checkedRadioButtonId,
+                Integer.parseInt(customSelectionDialog.findViewById<TextView>(R.id.countCurr).text.toString()))
                 viewModel.currentSelection = null
                 customSelectionDialog.dismiss()
+                customSelectionDialog.findViewById<TextView>(R.id.countCurr).text = "1"
             }
         }
 

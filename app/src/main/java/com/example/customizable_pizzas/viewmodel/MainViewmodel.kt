@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 class MainViewmodel(private val repo: Repository): ViewModel(){
 
     val responseData:MutableLiveData<ResponseType<ArrayList<ResponseData>>> = MutableLiveData()
+    var currentItemCount:MutableLiveData<Int> = MutableLiveData()
     var defaultCrust:MutableLiveData<Int> = MutableLiveData()
     var defaultSize:MutableLiveData<Int> = MutableLiveData()
     var currentItemPrice:MutableLiveData<Int> = MutableLiveData()
@@ -75,9 +76,9 @@ class MainViewmodel(private val repo: Repository): ViewModel(){
     }
 
     //adding item to cart
-    fun addToCart(crustId: Int,sizeId: Int){
-        currentSelection?.let { totalCost+=it.crusts[crustId-1].sizes[sizeId-1].price}
-        cartItemCountTemp++
+    fun addToCart(crustId: Int,sizeId: Int,count:Int){
+        currentSelection?.let { totalCost+=count*(it.crusts[crustId-1].sizes[sizeId-1].price)}
+        cartItemCountTemp+=count
         var item:CartItem =CartItem().apply {
             currentSelection?.let {
                 name = it.name
@@ -85,10 +86,11 @@ class MainViewmodel(private val repo: Repository): ViewModel(){
                 size = sizeId
                 isVeg = it.isVeg
                 price = it.crusts[crustId-1].sizes[sizeId-1].price
+                this.count = count
             }
         }
         if(cartItems.contains(item)){
-            cartItems[cartItems.indexOf(item)].count++
+            cartItems[cartItems.indexOf(item)].count+=count
         }else cartItems.add(item)
         cart.postValue(cartItems)
         totalCartValue.postValue(totalCost)
@@ -106,4 +108,5 @@ class MainViewmodel(private val repo: Repository): ViewModel(){
         cartItemsCount.postValue(cartItemCountTemp)
         cart.postValue(cartItems)
     }
+
 }

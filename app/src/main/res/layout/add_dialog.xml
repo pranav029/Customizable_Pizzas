@@ -62,16 +62,85 @@
         </LinearLayout>
     </ScrollView>
 
-    <TextView
-        android:id="@+id/cost"
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="5dp"
-        android:layout_weight="1"
-        android:fontFamily="@font/alata"
-        android:text="250"
-        android:textSize="24sp" />
+        android:orientation="horizontal">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="0"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/add"
+            app:layout_constraintStart_toEndOf="@+id/itemPrice"
+            app:layout_constraintTop_toTopOf="@+id/add">
+
+            <LinearLayout
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/dec"
+                    android:layout_width="14dp"
+                    android:layout_height="18dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:backgroundTint="#FFFFFF"
+                    app:icon="@drawable/min"
+                    app:iconGravity="textStart"
+                    app:iconPadding="0dp"
+                    app:iconSize="30dp"
+                    app:iconTint="#E91E63" />
+
+                <TextView
+                    android:id="@+id/countCurr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="1" />
+
+                <Button
+                    android:id="@+id/inc"
+                    android:layout_width="10dp"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="#FFFFFF"
+                    app:icon="@android:drawable/ic_input_add"
+                    app:iconGravity="textStart"
+                    app:iconTint="#E91E63" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <ImageView
+            android:id="@+id/imageView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="0"
+            app:srcCompat="@drawable/rupee" />
+
+        <TextView
+            android:id="@+id/cost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="5dp"
+            android:layout_weight="0"
+            android:fontFamily="@font/alata"
+            android:text="250"
+            android:textSize="24sp" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/add"
